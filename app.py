@@ -5,8 +5,6 @@
 import streamlit as st
 from dotenv import dotenv_values
 import openai 
-config = dotenv_values(".env")
-openai.api_key = config["OPENAI_API_KEY"]
 import os
 import openai
 from llama_index.llms import OpenAI
