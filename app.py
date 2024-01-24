@@ -1,7 +1,7 @@
 
 #install python-dotenv package and then create a .env file where you can add your api key and then 
 #import the same using following coommands. 
-import lama
+
 import streamlit as st
 from dotenv import dotenv_values
 import openai 
@@ -9,7 +9,7 @@ config = dotenv_values(".env")
 openai.api_key = config["OPENAI_API_KEY"]
 import os
 import openai
-from openai  import OpenAI
+from llama_index.llms import OpenAI
 import pypdf
 from llama_index import VectorStoreIndex, SimpleDirectoryReader
 from llama_index import ServiceContext, set_global_service_context 
@@ -17,14 +17,8 @@ from dotenv import dotenv_values
 config = dotenv_values(".env")
 openai.api_key = config["OPENAI_API_KEY"]
 
-#documents = SimpleDirectoryReader("data").load_data()
-#service_context = ServiceContext.from_defaults(chunk_size=1000, chunk_overlap=100)
-#index = VectorStoreIndex.from_documents(documents, service_context=service_context)
 
-#query_engine = index.as_query_engine()
-
-
-#llm = OpenAI(model="gpt-3.5-turbo", temperature=0.2,chunk_size=1000, chunk_overlap=100)
+llm = OpenAI(model="gpt-3.5-turbo", temperature=0.2,chunk_size=1000, chunk_overlap=100)
 
 st.set_page_config(page_title="Chat Geeta, powered by LlamaIndex", page_icon="🕉️", layout="centered", initial_sidebar_state="auto", menu_items=None)
 color = "#ff9933"
@@ -40,10 +34,10 @@ if "messages" not in st.session_state.keys(): # Initialize the chat messages his
 @st.cache_resource(show_spinner=False)
 def load_data():
     with st.spinner(text="Initializing...hang tight! This should take 1-2 minutes."):
-        reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
-        docs = reader.load_data()
-        service_context = ServiceContext.from_defaults( system_prompt="You are a guide and here to help, be calm and positive, be polite to the user")
-        index = VectorStoreIndex.from_documents(docs, service_context=service_context)
+        docs = SimpleDirectoryReader("data").load_data()
+        llm = OpenAI(model="gpt-3.5-turbo", temperature=0.2)
+        service_context = ServiceContext.from_defaults(llm =llm,chunk_size=1000, chunk_overlap=100,system_prompt="You are a guide and here to help, be calm and positive, be polite to the user")
+        index = VectorStoreIndex.from_documents(docs, servicecontext=service_context)
         return index
 
 index = load_data()
