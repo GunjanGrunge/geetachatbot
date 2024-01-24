@@ -14,8 +14,9 @@ import pypdf
 from llama_index import VectorStoreIndex, SimpleDirectoryReader
 from llama_index import ServiceContext, set_global_service_context 
 from dotenv import dotenv_values
-config = dotenv_values(".env")
-openai.api_key = config["OPENAI_API_KEY"]
+from dotenv import load_dotenv
+load_dotenv()
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
 llm = OpenAI(model="gpt-3.5-turbo", temperature=0.2,chunk_size=1000, chunk_overlap=100)
